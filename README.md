@@ -1,6 +1,7 @@
 # baz treesitter
 
 ## summary from project root
+
 ```
 tree-sitter generate
 tree-sitter build
@@ -8,6 +9,7 @@ mv baz.so ~/.local/share/nvim/site/parser
 mkdir -p ~/.local/share/nvim/site/queries/baz
 cp queries/baz/highlights.scm ~/.local/share/nvim/site/queries/baz/
 
+---------------------------------------------
 ~/.config/nvim/lua/plugins/treesitter-baz.lua 
 ---------------------------------------------
 return {
@@ -19,6 +21,7 @@ return {
   },
 }
 
+-------------------------------------
 ~/.config/nvim/lua/config/options.lua
 -------------------------------------
 ...
@@ -29,3 +32,4 @@ vim.filetype.add({
 })
 ...
 ```
+
