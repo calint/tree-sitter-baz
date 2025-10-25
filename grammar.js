@@ -105,7 +105,9 @@ module.exports = grammar({
     // identifier : type_name (type is optional)
     parameter: $ => seq(
       field('name', $.identifier),
-      optional(seq(':', $._parameter_type)),
+      optional(
+        seq(':', field('type', $._parameter_type))
+      ),
     ),
 
     member_field_list: $ => sep1($.member_field, ','),
@@ -158,8 +160,24 @@ module.exports = grammar({
     variable_declaration: $ => seq(
       $.var_keyword,
       field('destination', $.identifier),
-      optional(seq(':', $._definition_type)),
-      optional(seq('=', $._expression)),
+      choice(
+        seq(
+          optional(seq(
+            ':',
+            field('type', $._definition_type)
+          )),
+          '=',
+          field('initializer', $._expression)
+        ),
+        seq(
+          ':',
+          field('type', $._definition_type),
+          optional(seq(
+            '=',
+            field('initializer', $._expression)
+          ))
+        )
+      )
     ),
 
     // access_chain = expression
@@ -204,11 +222,9 @@ module.exports = grammar({
     // else clause (inlining _body to resolve the token boundary error)
     else_clause: $ => seq(
         $.else_keyword,
-        field('alternative', choice(
-          prec.right(1, $.block),
-          $._statement,
-        )),
+        field('alternative', $._body),
     ),
+
 
     loop_statement: $ => seq(
       $.loop_keyword,
@@ -399,7 +415,7 @@ module.exports = grammar({
 
     // Flow Control Keywords
     // Use prec(1) on this rule to define the 'else if' token
-    else_if_keyword: $ => prec(1, seq('else', /\s+/, 'if')),
+    else_if_keyword: $ => token(seq('else', /\s+/, 'if')),
     else_keyword: $ => 'else',
     break_keyword: $ => 'break',
     continue_keyword: $ => 'continue',
